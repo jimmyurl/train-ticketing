@@ -1,4 +1,9 @@
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/main
 # Train Ticketing App
 
 ## Overview
@@ -90,4 +95,7 @@ For questions or support, feel free to reach out to:
 ## License
 This project is licensed under the MIT License. For more details, refer to the LICENSE file.
 ```
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
