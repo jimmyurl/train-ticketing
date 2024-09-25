@@ -51,7 +51,7 @@ To run this project locally:
 
 1. Clone the repository from GitHub:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/jimmyurl/train-ticketing
    ```
 2. Navigate to the project directory:
    ```bash
@@ -90,7 +90,4 @@ For questions or support, feel free to reach out to:
 ## License
 This project is licensed under the MIT License. For more details, refer to the LICENSE file.
 ```
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/main
