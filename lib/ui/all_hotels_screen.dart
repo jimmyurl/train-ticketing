@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:sgr_ticketing/utils/data.dart'; // Ensure the correct path to your data.dart
+import 'package:sgr_ticketing/utils/app_styles.dart'; // Ensure the correct path to your app_styles.dart
+
+class AllHotelsScreen extends StatelessWidget {
+  const AllHotelsScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('All Hotels'),
+      ),
+      body: ListView.builder(
+        itemCount: hotelList.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: EdgeInsets.all(10.0),
+            child: ListTile(
+              leading: Image.asset(
+                'assets/images/${hotelList[index]['image']}', // Ensure the images are in the correct folder
+                width: 100,
+                fit: BoxFit.cover,
+              ),
+              title:
+                  Text(hotelList[index]['place'], style: TextStyles.headline2),
+              subtitle: Text(
+                  '${hotelList[index]['destination']} - \$${hotelList[index]['price']}'),
+              onTap: () {
+                // Add navigation to hotel details if needed
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

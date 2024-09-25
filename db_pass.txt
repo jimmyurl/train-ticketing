@@ -1,0 +1,5 @@
+HzSGGgd50i0xNleC
+
+ url: 'https://ibpilztrlcdwmuultgnu.supabase.co/',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlicGlsenRybGNkd211dWx0Z251Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjcyNTE4ODMsImV4cCI6MjA0MjgyNzg4M30.TmJbF1-nAWhxMYVVOkrLp3_sO0Nz4Q3y5X8vpG74TNc',
