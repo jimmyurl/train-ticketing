@@ -87,7 +87,5 @@ Contributions are welcome! To contribute:
 For questions or support, feel free to reach out to:
 - **Email**: jimmy.james365@gmail.com
 
-## License
-This project is licensed under the MIT License. For more details, refer to the LICENSE file.
-```
+
 
