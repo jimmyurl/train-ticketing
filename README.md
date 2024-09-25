@@ -1,9 +1,4 @@
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> origin/main
 # Train Ticketing App
 
 ## Overview
