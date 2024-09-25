@@ -1,4 +1,4 @@
-Sure! Here’s the README with backticks and code formatting included:
+
 
 ```markdown
 # Train Ticketing App
@@ -84,5 +84,3 @@ For any questions or support, reach out to:
 ## License
 This project is licensed under the MIT License. Please refer to the LICENSE file for more details.
 ```
-
-Feel free to customize any section further to better fit your project!
