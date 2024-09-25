@@ -55,7 +55,7 @@ To run this project locally:
    ```
 2. Navigate to the project directory:
    ```bash
-   cd my_ticketing_app
+   cd train-ticketing
    ```
 3. Install dependencies using Flutter:
    ```bash
