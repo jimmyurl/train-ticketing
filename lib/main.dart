@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'ui/seat_selection_screen.dart';
 import 'ui/select_screen.dart';
 import 'ui/home_screen.dart';
@@ -17,7 +16,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
     url: 'https://ibpilztrlcdwmuultgnu.supabase.co/',
-    anonKey: 'your_anon_key', // Replace with your actual anon key
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlicGlsenRybGNkd211dWx0Z251Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjcyNTE4ODMsImV4cCI6MjA0MjgyNzg4M30.TmJbF1-nAWhxMYVVOkrLp3_sO0Nz4Q3y5X8vpG74TNc', // Replace with your actual anon key
   );
 
   runApp(ScreenUtilInit(
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
                 : ThemeMode.dark,
             theme: themeHelper.lightTheme,
             darkTheme: themeHelper.darkTheme,
-            home: const HomeScreen(),
+            home: HomeScreen(),
             routes: {
               '/select': (context) => const SelectScreen(),
               '/seat-selection': (context) =>
