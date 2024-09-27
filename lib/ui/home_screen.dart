@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:gap/gap.dart';
-import 'package:sgr_ticketing/widgets/tickets.dart'; // Adjust according to your project structure
-import 'package:sgr_ticketing/widgets/hotels_sceen.dart'; // Adjust according to your project structure
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,191 +9,247 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String userName =
-      "Jimmy"; // Example variable to simulate fetching the user name
-  List<dynamic>? ticketList; // Adjust type as needed
-  List<dynamic>? hotelList; // Adjust type as needed
-
-  @override
-  void initState() {
-    super.initState();
-    fetchTickets();
-    fetchHotels();
-  }
-
-  Future<void> fetchTickets() async {
-    final client = Supabase.instance.client;
-
-    try {
-      // Fetch tickets from 'tickets' table
-      final List<dynamic> tickets = await client
-          .from('tickets') // Replace 'tickets' with your actual table name
-          .select()
-          .order('date', ascending: true) // Example ordering
-          .limit(10); // Adjust as needed
-
-      // Update state with fetched ticket data
-      setState(() {
-        ticketList = tickets;
-      });
-    } catch (error) {
-      print('Error fetching tickets: $error');
-      // Handle error appropriately, e.g., show a snack bar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching tickets: $error')),
-      );
-    }
-  }
-
-  Future<void> fetchHotels() async {
-    final client = Supabase.instance.client;
-
-    try {
-      // Fetch hotels from 'hotels' table
-      final List<dynamic> hotels = await client
-          .from('hotels') // Replace 'hotels' with your actual table name
-          .select()
-          .limit(10); // Adjust as needed
-
-      // Update state with fetched hotel data
-      setState(() {
-        hotelList = hotels;
-      });
-    } catch (error) {
-      print('Error fetching hotels: $error');
-      // Handle error appropriately, e.g., show a snack bar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching hotels: $error')),
-      );
-    }
-  }
+  // Example list of popular destinations images
+  List<String> popularDestinationsImages = [
+    'https://example.com/image1.jpg',
+    'https://example.com/image2.jpg',
+    'https://example.com/image3.jpg',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5EDDC),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Gap(40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Hello $userName',
-                            style: const TextStyle(fontSize: 24)),
-                        const Gap(5),
-                        const Text('Book Ticket',
-                            style: TextStyle(
-                                fontSize: 32, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: const DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage('assets/images/logo.png'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const Gap(25),
-                GestureDetector(
-                  onTap: () {
-                    // Navigate to search screen
-                    Navigator.pushNamed(context, '/search');
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 12),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.search, color: Colors.black),
-                        const Gap(5),
-                        const Text("Search...", style: TextStyle(fontSize: 16)),
-                      ],
-                    ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 30), // Space from top
+
+            // Header Image
+            _buildHeaderImage(),
+
+            // Slogan
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: Text(
+                  'Where you wanna go?',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent,
                   ),
                 ),
-                const Gap(40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Upcoming trains',
-                        style: TextStyle(fontSize: 24)),
-                    InkWell(
-                      onTap: () {
-                        // Navigate to all upcoming trains screen
-                        Navigator.pushNamed(context, '/all-trains');
-                      },
-                      child: const Text('View all',
-                          style: TextStyle(fontSize: 16, color: Colors.black)),
-                    ),
-                  ],
+              ),
+            ),
+
+            // Search Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  _buildSearchBar(),
+                  const SizedBox(height: 10),
+                  _buildTransportTypeSelection(),
+                ],
+              ),
+            ),
+
+            // Date Picker (Optional)
+            _buildDatePicker(),
+
+            const SizedBox(height: 20),
+
+            // Popular Destinations
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                'Popular Destinations',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                 ),
-                const Gap(15),
-              ],
+              ),
             ),
-          ),
+            const SizedBox(height: 10),
+            _buildPopularDestinationsCarousel(),
 
-          // Horizontal Scroll for Upcoming Tickets
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(left: 20),
-            child: Row(
-              children: (ticketList ?? [])
-                  .map((ticket) => Tickets(ticket: ticket))
-                  .toList(),
-            ),
-          ),
-
-          const Gap(15),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Hotels', style: TextStyle(fontSize: 24)),
-                InkWell(
-                  onTap: () {
-                    // Navigate to all hotels screen
-                    Navigator.pushNamed(context, '/all-hotels');
-                  },
-                  child: const Text('View all',
-                      style: TextStyle(fontSize: 16, color: Colors.black)),
-                ),
-              ],
-            ),
-          ),
-
-          const Gap(15),
-
-          // Horizontal Scroll for Hotels
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(left: 20),
-            child: Row(
-              children: (hotelList ?? [])
-                  .map((hotel) => HotelsScreen(hotel: hotel))
-                  .toList(),
-            ),
-          ),
-        ],
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
+      // Bottom Navigation Bar
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  // Build Header Image
+  Widget _buildHeaderImage() {
+    return Container(
+      height: 200,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(
+              'https://whc.unesco.org/en/list/403/gallery/'), // Replace with your actual header image URL
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  // Build Search Bar
+  Widget _buildSearchBar() {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+        child: Column(
+          children: [
+            // From (Departure) Field
+            _buildSearchField(
+              label: 'From',
+              hintText: 'Enter departure city',
+              icon: Icons.location_on,
+            ),
+            const Divider(),
+            // To (Destination) Field
+            _buildSearchField(
+              label: 'To',
+              hintText: 'Enter destination city',
+              icon: Icons.location_pin,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Build Search Input Fields
+  Widget _buildSearchField(
+      {required String label,
+      required String hintText,
+      required IconData icon}) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.blueAccent),
+        const SizedBox(width: 10),
+        Expanded(
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: label,
+              hintText: hintText,
+              border: InputBorder.none,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Build Transport Type Selection
+  Widget _buildTransportTypeSelection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildTransportOption('Train', Icons.train),
+        _buildTransportOption('Bus', Icons.directions_bus),
+        _buildTransportOption('Flight', Icons.flight),
+      ],
+    );
+  }
+
+  Widget _buildTransportOption(String label, IconData icon) {
+    return Column(
+      children: [
+        Icon(icon, size: 40, color: Colors.blueAccent),
+        const SizedBox(height: 5),
+        Text(label, style: const TextStyle(fontSize: 16)),
+      ],
+    );
+  }
+
+  // Date Picker Section
+  Widget _buildDatePicker() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: GestureDetector(
+        onTap: () {
+          // Show date picker dialog
+          showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime(2101),
+          );
+        },
+        child: Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            child: Row(
+              children: const [
+                Icon(Icons.calendar_today, color: Colors.blueAccent),
+                SizedBox(width: 10),
+                Text(
+                  'Select Travel Date',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Build Popular Destinations Carousel
+  Widget _buildPopularDestinationsCarousel() {
+    return CarouselSlider(
+      options: CarouselOptions(
+        autoPlay: true,
+        enlargeCenterPage: true,
+        height: 200,
+      ),
+      items: popularDestinationsImages.map((imageUrl) {
+        return Container(
+          margin: const EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: DecorationImage(
+              image: NetworkImage(imageUrl),
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  // Build Bottom Navigation Bar
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      currentIndex: 0, // Set initial tab
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Search',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.account_circle),
+          label: 'Profile',
+        ),
+      ],
+      onTap: (index) {
+        // Handle navigation tap
+      },
     );
   }
 }
