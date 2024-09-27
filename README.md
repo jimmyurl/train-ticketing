@@ -1,9 +1,4 @@
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> origin/main
 # Train Ticketing App
 
 ## Overview
@@ -56,11 +51,11 @@ To run this project locally:
 
 1. Clone the repository from GitHub:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/jimmyurl/train-ticketing
    ```
 2. Navigate to the project directory:
    ```bash
-   cd my_ticketing_app
+   cd train-ticketing
    ```
 3. Install dependencies using Flutter:
    ```bash
@@ -92,10 +87,5 @@ Contributions are welcome! To contribute:
 For questions or support, feel free to reach out to:
 - **Email**: jimmy.james365@gmail.com
 
-## License
-This project is licensed under the MIT License. For more details, refer to the LICENSE file.
-```
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/main
+
