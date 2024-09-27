@@ -2,7 +2,7 @@
 # Train Ticketing App
 
 ## Overview
-The Ticketing App is a mobile application designed to streamline the ticket booking process for various events and travel. With an easy-to-use interface, users can browse available options, book tickets, and manage their bookings efficiently.
+The Ticketing App is a mobile application designed to streamline the ticket booking process for train,bus or a flight across Tanzania. With an easy-to-use interface, users can browse available options, book tickets, and manage their bookings efficiently.
 
 ## Features
 - **Browse Events and Hotels**: Users can explore various events and hotel options.
