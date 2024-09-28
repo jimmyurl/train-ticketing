@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:sgr_ticketing/widgets/circular_container.dart';
-import 'package:sgr_ticketing/utils/app_styles.dart';
-import 'package:sgr_ticketing/utils/layout.dart';
+import 'package:Tikiti/widgets/circular_container.dart';
+import 'package:Tikiti/utils/app_styles.dart';
+import 'package:Tikiti/utils/layout.dart';
 
 class Tickets extends StatelessWidget {
   final Map<String, dynamic>? ticket; // Nullable type for ticket

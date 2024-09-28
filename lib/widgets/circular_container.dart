@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sgr_ticketing/utils/app_styles.dart';
+import 'package:Tikiti/utils/app_styles.dart';
 
 class CircularContainer extends StatelessWidget {
   final bool? iscolor;

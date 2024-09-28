@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:sgr_ticketing/utils/app_styles.dart';
-import 'package:sgr_ticketing/utils/layout.dart';
+import 'package:Tikiti/utils/app_styles.dart';
+import 'package:Tikiti/utils/layout.dart';
 
 class HotelsScreen extends StatelessWidget {
   final Map<String, dynamic> hotel;

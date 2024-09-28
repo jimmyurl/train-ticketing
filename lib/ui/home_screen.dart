@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -9,11 +10,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Example list of popular destinations images
   List<String> popularDestinationsImages = [
-    'https://example.com/image1.jpg',
-    'https://example.com/image2.jpg',
-    'https://example.com/image3.jpg',
+    'https://www.railwaypro.com/wp/tanzania-inaugurates-morogoro-dodoma-sgr/',
+    'https://www.worldnomads.com/travel-safety/africa/tanzania/travel-in-and-around-tanzania',
+    'https://aviationweek.com/air-transport/airports-networks/gallery-dar-es-salaam-julius-nyerere-international-airport-terminal',
   ];
 
   @override
@@ -24,23 +24,16 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 30), // Space from top
+            const SizedBox(height: 30),
 
             // Header Image
             _buildHeaderImage(),
 
-            // Slogan
-            const Padding(
+            // Typing Effect Slogan
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
               child: Center(
-                child: Text(
-                  'Where you wanna go?',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
-                  ),
-                ),
+                child: _buildTypingText(),
               ),
             ),
 
@@ -56,9 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Date Picker (Optional)
-            _buildDatePicker(),
-
             const SizedBox(height: 20),
 
             // Popular Destinations
@@ -69,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Poppins',
                 ),
               ),
             ),
@@ -79,26 +70,48 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      // Bottom Navigation Bar
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
-  // Build Header Image
   Widget _buildHeaderImage() {
     return Container(
       height: 200,
+      width: double.infinity,
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: NetworkImage(
-              'https://whc.unesco.org/en/list/403/gallery/'), // Replace with your actual header image URL
+              'https://www.micato.com/wp-content/uploads/2018/09/mt-kilimanjaro-1110x700.jpg'),
           fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-  // Build Search Bar
+  static Widget _buildTypingText() {
+    return SizedBox(
+      width: 250.0,
+      child: AnimatedTextKit(
+        animatedTexts: [
+          TypewriterAnimatedText(
+            'Where do you want to go?',
+            textStyle: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Poppins',
+              color: Color.fromARGB(255, 95, 25, 54),
+            ),
+            speed: const Duration(milliseconds: 100),
+          ),
+        ],
+        totalRepeatCount: 1, // Make the typing effect play once
+        pause: const Duration(milliseconds: 1000),
+        displayFullTextOnTap: true, // Optional: skip animation if tapped
+        stopPauseOnTap: true,
+      ),
+    );
+  }
+
   Widget _buildSearchBar() {
     return Card(
       elevation: 5,
@@ -107,14 +120,12 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
         child: Column(
           children: [
-            // From (Departure) Field
             _buildSearchField(
               label: 'From',
               hintText: 'Enter departure city',
               icon: Icons.location_on,
             ),
             const Divider(),
-            // To (Destination) Field
             _buildSearchField(
               label: 'To',
               hintText: 'Enter destination city',
@@ -126,7 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Build Search Input Fields
   Widget _buildSearchField(
       {required String label,
       required String hintText,
@@ -141,6 +151,12 @@ class _HomeScreenState extends State<HomeScreen> {
               labelText: label,
               hintText: hintText,
               border: InputBorder.none,
+              labelStyle: const TextStyle(
+                fontFamily: 'Poppins',
+              ),
+              hintStyle: const TextStyle(
+                fontFamily: 'Poppins',
+              ),
             ),
           ),
         ),
@@ -148,65 +164,34 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Build Transport Type Selection
   Widget _buildTransportTypeSelection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildTransportOption('Train', Icons.train),
-        _buildTransportOption('Bus', Icons.directions_bus),
-        _buildTransportOption('Flight', Icons.flight),
+        _buildTransportOption('Train', 'assets/icons/trains.png'),
+        _buildTransportOption('Bus', 'assets/icons/buses.png'),
+        _buildTransportOption('Flight', 'assets/icons/flights.png'),
       ],
     );
   }
 
-  Widget _buildTransportOption(String label, IconData icon) {
+  Widget _buildTransportOption(String label, String iconPath) {
     return Column(
       children: [
-        Icon(icon, size: 40, color: Colors.blueAccent),
+        Image.asset(
+          iconPath,
+          height: 40,
+          width: 40,
+        ),
         const SizedBox(height: 5),
-        Text(label, style: const TextStyle(fontSize: 16)),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, fontFamily: 'Poppins'),
+        ),
       ],
     );
   }
 
-  // Date Picker Section
-  Widget _buildDatePicker() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: GestureDetector(
-        onTap: () {
-          // Show date picker dialog
-          showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime.now(),
-            lastDate: DateTime(2101),
-          );
-        },
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-            child: Row(
-              children: const [
-                Icon(Icons.calendar_today, color: Colors.blueAccent),
-                SizedBox(width: 10),
-                Text(
-                  'Select Travel Date',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Build Popular Destinations Carousel
   Widget _buildPopularDestinationsCarousel() {
     return CarouselSlider(
       options: CarouselOptions(
@@ -229,27 +214,32 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Build Bottom Navigation Bar
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
-      currentIndex: 0, // Set initial tab
-      items: const [
+      currentIndex: 0,
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: ImageIcon(
+            AssetImage('assets/icons/home.png'),
+            color: Colors.blueAccent,
+          ),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
+          icon: ImageIcon(
+            AssetImage('assets/icons/search.png'),
+            color: Colors.blueAccent,
+          ),
           label: 'Search',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
+          icon: ImageIcon(
+            AssetImage('assets/icons/profile.png'),
+            color: Colors.blueAccent,
+          ),
           label: 'Profile',
         ),
       ],
-      onTap: (index) {
-        // Handle navigation tap
-      },
     );
   }
 }

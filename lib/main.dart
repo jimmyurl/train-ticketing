@@ -8,20 +8,24 @@ import 'ui/home_screen.dart';
 import 'ui/search_screen.dart';
 import 'ui/all_trains_screen.dart';
 import 'ui/all_hotels_screen.dart';
+import 'ui/onboarding_screen.dart'; // Import Onboarding Screen
 import 'utils/selection_button_provider.dart';
 import 'utils/theme_data.dart';
 import 'utils/theme_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Supabase
   await Supabase.initialize(
-    url: 'https://ibpilztrlcdwmuultgnu.supabase.co/',
+    url:
+        'https://ibpilztrlcdwmuultgnu.supabase.co/', // Replace with your actual Supabase URL
     anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlicGlsenRybGNkd211dWx0Z251Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjcyNTE4ODMsImV4cCI6MjA0MjgyNzg4M30.TmJbF1-nAWhxMYVVOkrLp3_sO0Nz4Q3y5X8vpG74TNc', // Replace with your actual anon key
+        'YOUR_SUPABASE_ANON_KEY', // Replace with your actual Supabase anon key
   );
 
   runApp(ScreenUtilInit(
-    designSize: const Size(411, 821),
+    designSize: const Size(411, 821), // Set your design size
     builder: (context, widget) => MyApp(),
   ));
 }
@@ -46,7 +50,12 @@ class MyApp extends StatelessWidget {
                 : ThemeMode.dark,
             theme: themeHelper.lightTheme,
             darkTheme: themeHelper.darkTheme,
-            home: HomeScreen(),
+
+            // Show the Onboarding Screen first
+            home:
+                OnboardingScreen(), // Set the Onboarding screen as the initial screen
+
+            // Define routes
             routes: {
               '/select': (context) => const SelectScreen(),
               '/seat-selection': (context) =>
@@ -54,6 +63,8 @@ class MyApp extends StatelessWidget {
               '/search': (context) => const SearchScreen(),
               '/all-trains': (context) => const AllTrainsScreen(),
               '/all-hotels': (context) => const AllHotelsScreen(),
+              '/home': (context) =>
+                  HomeScreen(), // Navigate to the home screen after onboarding
             },
           );
         },

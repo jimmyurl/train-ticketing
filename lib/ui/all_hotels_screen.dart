@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sgr_ticketing/utils/data.dart'; // Ensure the correct path to your data.dart
-import 'package:sgr_ticketing/utils/app_styles.dart'; // Ensure the correct path to your app_styles.dart
+import 'package:Tikiti/utils/data.dart'; // Ensure the correct path to your data.dart
+import 'package:Tikiti/utils/app_styles.dart'; // Ensure the correct path to your app_styles.dart
 
 class AllHotelsScreen extends StatelessWidget {
   const AllHotelsScreen({Key? key}) : super(key: key);
