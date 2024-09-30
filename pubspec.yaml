@@ -20,6 +20,7 @@ dependencies:
   carousel_slider: ^5.0.0
   google_fonts: ^6.2.1
   animated_text_kit: ^4.2.2
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
@@ -31,7 +32,13 @@ flutter:
 
   # Specify assets here
   assets:
-    - assets/icons/
+    - assets/icons/trains.png
+    - assets/icons/buses.png
+    - assets/icons/flights.png
+    - assets/icons/home.png
+    - assets/icons/search.png
+    - assets/icons/hotel.png
+    - assets/icons/profile.png 
     - assets/images/
     - assets/images/
 

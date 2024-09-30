@@ -50,24 +50,64 @@ class MyApp extends StatelessWidget {
                 : ThemeMode.dark,
             theme: themeHelper.lightTheme,
             darkTheme: themeHelper.darkTheme,
-
-            // Show the Onboarding Screen first
-            home:
-                OnboardingScreen(), // Set the Onboarding screen as the initial screen
-
-            // Define routes
-            routes: {
-              '/select': (context) => const SelectScreen(),
-              '/seat-selection': (context) =>
-                  SeatSelectionScreen(trainId: 1), // Pass the actual train ID
-              '/search': (context) => const SearchScreen(),
-              '/all-trains': (context) => const AllTrainsScreen(),
-              '/all-hotels': (context) => const AllHotelsScreen(),
-              '/home': (context) =>
-                  HomeScreen(), // Navigate to the home screen after onboarding
-            },
+            home: const MyHomePage(),
           );
         },
+      ),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = [
+    HomeScreen(),
+    SearchScreen(),
+    AllTrainsScreen(),
+    AllHotelsScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage("assets/icons/home.png")),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage("assets/icons/search.png")),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage("assets/icons/hotel.png")),
+            label: 'Hotels',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage("assets/icons/profile.png")),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.blue, // Change this color to match your theme
+        unselectedItemColor: Colors.grey,
       ),
     );
   }
