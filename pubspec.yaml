@@ -38,7 +38,8 @@ flutter:
     - assets/icons/home.png
     - assets/icons/search.png
     - assets/icons/hotel.png
-    - assets/icons/profile.png 
+    - assets/icons/profile.png
+    - assets/icons/ticket-logo.png 
     - assets/images/
     - assets/images/
 

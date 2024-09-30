@@ -12,6 +12,10 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime? departureDate;
   DateTime? returnDate;
 
+  // Text Controllers for 'From' and 'To' fields
+  final TextEditingController fromController = TextEditingController();
+  final TextEditingController toController = TextEditingController();
+
   final List<String> popularDestinationsImages = [
     'https://example.com/image1.jpg',
     'https://example.com/image2.jpg',
@@ -47,31 +51,60 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal, // Set teal background color here
+      backgroundColor: Colors.teal,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 20),
-            // Logo Section
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Image.asset(
                 'assets/icons/ticket-logo.png',
-                height: 100,
+                height: 70,
               ),
             ),
-            // Typing Effect Slogan
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Center(child: _buildTypingText()),
             ),
-            // Search Section
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  _buildSearchBar(),
+                  // 'From' Field
+                  TextField(
+                    controller: fromController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'From (Departure)',
+                      hintStyle: const TextStyle(fontFamily: 'Poppins'),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon:
+                          const Icon(Icons.location_on, color: Colors.teal),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // 'To' Field
+                  TextField(
+                    controller: toController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'To (Destination)',
+                      hintStyle: const TextStyle(fontFamily: 'Poppins'),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon:
+                          const Icon(Icons.location_on, color: Colors.teal),
+                    ),
+                  ),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -188,7 +221,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildTypingText() {
-    // Typing effect or animation can be added here.
     return const Text(
       'Plan your journey effortlessly...',
       style: TextStyle(
@@ -196,22 +228,6 @@ class _HomeScreenState extends State<HomeScreen> {
         fontSize: 22,
         fontWeight: FontWeight.bold,
         color: Colors.white,
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return TextField(
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'Where do you want to go?',
-        hintStyle: const TextStyle(fontFamily: 'Poppins'),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
-        prefixIcon: const Icon(Icons.search, color: Colors.teal),
       ),
     );
   }
