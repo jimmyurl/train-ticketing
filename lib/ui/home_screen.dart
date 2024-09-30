@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,14 +13,13 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime? departureDate;
   DateTime? returnDate;
 
-  // Text Controllers for 'From' and 'To' fields
   final TextEditingController fromController = TextEditingController();
   final TextEditingController toController = TextEditingController();
 
   final List<String> popularDestinationsImages = [
-    'https://example.com/image1.jpg',
-    'https://example.com/image2.jpg',
-    'https://example.com/image3.jpg',
+    'https://www.skyscrapercity.com/threads/dodoma-dodoma-city-hotel-10-fls.2201464/',
+    'https://www.ghrshotels.com/en/hotel/flomi-hotel.ih1812727',
+    'https://www.facebook.com/photo.php?fbid=5839764002704636&id=157303284284098&set=a.159892260691867',
   ];
 
   Future<void> _selectDepartureDate(BuildContext context) async {
@@ -217,18 +217,50 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark),
+            label: 'Saved',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: 0, // Set the current index based on the selected page
+        selectedItemColor: Colors.teal,
+        onTap: (int index) {
+          // Handle bottom navigation tap
+          // You can navigate to different screens based on index
+        },
+      ),
     );
   }
 
   Widget _buildTypingText() {
-    return const Text(
-      'Plan your journey effortlessly...',
-      style: TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: 22,
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
-      ),
+    return AnimatedTextKit(
+      animatedTexts: [
+        TypewriterAnimatedText(
+          'Plan your journey effortlessly...',
+          textStyle: const TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          speed: const Duration(milliseconds: 100),
+        ),
+      ],
+      isRepeatingAnimation: false,
     );
   }
 

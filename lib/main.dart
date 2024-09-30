@@ -12,6 +12,7 @@ import 'ui/onboarding_screen.dart'; // Import Onboarding Screen
 import 'utils/selection_button_provider.dart';
 import 'utils/theme_data.dart';
 import 'utils/theme_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // For storing onboarding status
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,11 +51,36 @@ class MyApp extends StatelessWidget {
                 : ThemeMode.dark,
             theme: themeHelper.lightTheme,
             darkTheme: themeHelper.darkTheme,
-            home: const MyHomePage(),
+            home:
+                MyAppStarter(), // Navigate to the starter widget for onboarding
           );
         },
       ),
     );
+  }
+}
+
+class MyAppStarter extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: checkIfOnboardingCompleted(),
+      builder: (context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator()); // Show loading
+        }
+        if (snapshot.data == true) {
+          return MyHomePage(); // If onboarding completed, go to Home
+        } else {
+          return OnboardingScreen(); // Else show onboarding
+        }
+      },
+    );
+  }
+
+  Future<bool> checkIfOnboardingCompleted() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('onboardingCompleted') ?? false;
   }
 }
 
