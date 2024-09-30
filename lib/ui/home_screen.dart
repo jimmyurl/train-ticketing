@@ -12,6 +12,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isRoundTrip = false;
   DateTime? departureDate;
   DateTime? returnDate;
+  int currentIndex = 0; // Track the selected index for the BottomNavigationBar
 
   final TextEditingController fromController = TextEditingController();
   final TextEditingController toController = TextEditingController();
@@ -236,11 +237,14 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Profile',
           ),
         ],
-        currentIndex: 0, // Set the current index based on the selected page
+        currentIndex: currentIndex,
         selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.black, // Set unselected color
         onTap: (int index) {
-          // Handle bottom navigation tap
-          // You can navigate to different screens based on index
+          setState(() {
+            currentIndex = index; // Update current index
+          });
+          // Handle navigation to different screens based on index
         },
       ),
     );
@@ -294,28 +298,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildPopularDestinationsCarousel() {
-    return CarouselSlider.builder(
-      itemCount: popularDestinationsImages.length,
-      itemBuilder: (context, index, realIndex) {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 200,
+        autoPlay: true,
+        aspectRatio: 16 / 9,
+        enlargeCenterPage: true,
+      ),
+      items: popularDestinationsImages.map((imageUrl) {
         return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          margin: const EdgeInsets.symmetric(horizontal: 5.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
-              image: NetworkImage(popularDestinationsImages[index]),
+              image: NetworkImage(imageUrl),
               fit: BoxFit.cover,
             ),
           ),
         );
-      },
-      options: CarouselOptions(
-        height: 200,
-        enlargeCenterPage: true,
-        autoPlay: true,
-        autoPlayInterval: const Duration(seconds: 3),
-        aspectRatio: 16 / 9,
-        viewportFraction: 0.8,
-      ),
+      }).toList(),
     );
   }
 }
