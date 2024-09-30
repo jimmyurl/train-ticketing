@@ -220,19 +220,19 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: ImageIcon(AssetImage('assets/icons/home.png')),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: ImageIcon(AssetImage('assets/icons/search.png')),
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
+            icon: ImageIcon(AssetImage('assets/icons/saved.png')),
             label: 'Saved',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: ImageIcon(AssetImage('assets/icons/profile.png')),
             label: 'Profile',
           ),
         ],
@@ -309,10 +309,12 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
       options: CarouselOptions(
-        height: 180,
+        height: 200,
         enlargeCenterPage: true,
         autoPlay: true,
         autoPlayInterval: const Duration(seconds: 3),
+        aspectRatio: 16 / 9,
+        viewportFraction: 0.8,
       ),
     );
   }

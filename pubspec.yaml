@@ -39,6 +39,7 @@ flutter:
     - assets/icons/search.png
     - assets/icons/hotel.png
     - assets/icons/profile.png
+    - assets/icons/saved.png
     - assets/icons/ticket-logo.png 
     - assets/images/
     - assets/images/
