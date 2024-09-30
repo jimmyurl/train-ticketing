@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,291 +8,122 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isRoundTrip = false;
-  DateTime? departureDate;
-  DateTime? returnDate;
-  int currentIndex = 0; // Track the selected index for the BottomNavigationBar
-
   final TextEditingController fromController = TextEditingController();
   final TextEditingController toController = TextEditingController();
+  DateTime? departureDate;
 
-  final List<String> popularDestinationsImages = [
-    'https://www.skyscrapercity.com/threads/dodoma-dodoma-city-hotel-10-fls.2201464/',
-    'https://www.ghrshotels.com/en/hotel/flomi-hotel.ih1812727',
-    'https://www.facebook.com/photo.php?fbid=5839764002704636&id=157303284284098&set=a.159892260691867',
-  ];
+  List<String> popularDestinationsImages = [];
+  List<String> locations = [];
 
-  Future<void> _selectDepartureDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-    if (picked != null && picked != departureDate)
-      setState(() {
-        departureDate = picked;
-      });
+  @override
+  void initState() {
+    super.initState();
+    fetchPopularDestinations();
+    fetchLocations();
   }
 
-  Future<void> _selectReturnDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: departureDate ?? DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-    if (picked != null && picked != returnDate)
-      setState(() {
-        returnDate = picked;
-      });
+  Future<void> fetchPopularDestinations() async {
+    final response = await Supabase.instance.client
+        .from('popular_destinations')
+        .select('image_url') // assuming 'image_url' is a column
+        .order('id')
+        .limit(10)
+        .then((value) {
+      // Use the data directly from the value
+      popularDestinationsImages =
+          List<String>.from(value.map((item) => item['image_url']));
+    }).catchError((error) {
+      // Handle the error appropriately
+      print('Error fetching popular destinations: $error');
+    });
+
+    setState(() {});
+  }
+
+  Future<void> fetchLocations() async {
+    final response = await Supabase.instance.client
+        .from('locations')
+        .select('name') // assuming 'name' is a column
+        .order('id')
+        .then((value) {
+      // Use the data directly from the value
+      locations = List<String>.from(value.map((item) => item['name']));
+    }).catchError((error) {
+      // Handle the error appropriately
+      print('Error fetching locations: $error');
+    });
+
+    setState(() {});
+  }
+
+  void _handleSearch() {
+    if (fromController.text.isEmpty ||
+        toController.text.isEmpty ||
+        departureDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+    // Proceed with search logic
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal,
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Image.asset(
-                'assets/icons/ticket-logo.png',
-                height: 70,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Center(child: _buildTypingText()),
-            ),
+            // Search form
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  // 'From' Field
                   TextField(
                     controller: fromController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'From (Departure)',
-                      hintStyle: const TextStyle(fontFamily: 'Poppins'),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon:
-                          const Icon(Icons.location_on, color: Colors.teal),
-                    ),
+                    decoration: InputDecoration(labelText: 'From'),
                   ),
-                  const SizedBox(height: 10),
-                  // 'To' Field
                   TextField(
                     controller: toController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'To (Destination)',
-                      hintStyle: const TextStyle(fontFamily: 'Poppins'),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon:
-                          const Icon(Icons.location_on, color: Colors.teal),
-                    ),
+                    decoration: InputDecoration(labelText: 'To'),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Checkbox(
-                        value: isRoundTrip,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isRoundTrip = value ?? false;
-                          });
-                        },
-                      ),
-                      const Text(
-                        'Round Trip',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            color: Colors.white),
-                      ),
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: () => _selectDepartureDate(context),
-                    child: Card(
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 12.0),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.calendar_today,
-                                color: Colors.blueAccent),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                departureDate != null
-                                    ? "Departure: ${DateFormat.yMMMd().format(departureDate!)}"
-                                    : "Select departure date",
-                                style: const TextStyle(fontFamily: 'Poppins'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (isRoundTrip) ...[
-                    const SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: () => _selectReturnDate(context),
-                      child: Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12.0, horizontal: 12.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.calendar_today,
-                                  color: Colors.blueAccent),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  returnDate != null
-                                      ? "Return: ${DateFormat.yMMMd().format(returnDate!)}"
-                                      : "Select return date",
-                                  style: const TextStyle(fontFamily: 'Poppins'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 10),
-                  _buildTransportTypeSelection(),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Handle Search Action
+                  // Add a Date Picker for departureDate
+                  TextButton(
+                    onPressed: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: departureDate ?? DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (date != null && date != departureDate) {
+                        setState(() {
+                          departureDate = date;
+                        });
+                      }
                     },
-                    child: const Text('Search',
-                        style: TextStyle(fontSize: 18, fontFamily: 'Poppins')),
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 24.0),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8))),
+                    child: Text(
+                      departureDate == null
+                          ? 'Select Departure Date'
+                          : 'Departure: ${departureDate!.toLocal()}'
+                              .split(' ')[0],
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _handleSearch,
+                    child: const Text('Search'),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text('Popular Destinations',
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
-                      color: Colors.white)),
-            ),
-            const SizedBox(height: 10),
+            // Popular Destinations Carousel
             _buildPopularDestinationsCarousel(),
-            const SizedBox(height: 20),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/icons/home.png')),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/icons/search.png')),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/icons/saved.png')),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/icons/profile.png')),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: currentIndex,
-        selectedItemColor: Colors.teal,
-        unselectedItemColor: Colors.black, // Set unselected color
-        onTap: (int index) {
-          setState(() {
-            currentIndex = index; // Update current index
-          });
-          // Handle navigation to different screens based on index
-        },
-      ),
-    );
-  }
-
-  Widget _buildTypingText() {
-    return AnimatedTextKit(
-      animatedTexts: [
-        TypewriterAnimatedText(
-          'Plan your journey effortlessly...',
-          textStyle: const TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          speed: const Duration(milliseconds: 100),
-        ),
-      ],
-      isRepeatingAnimation: false,
-    );
-  }
-
-  Widget _buildTransportTypeSelection() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildTransportOption('Train', 'assets/icons/trains.png'),
-        _buildTransportOption('Bus', 'assets/icons/buses.png'),
-        _buildTransportOption('Flight', 'assets/icons/flights.png'),
-      ],
-    );
-  }
-
-  Widget _buildTransportOption(String label, String iconPath) {
-    return Column(
-      children: [
-        Image.asset(
-          iconPath,
-          width: 50,
-          height: 50,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-              fontSize: 16, fontFamily: 'Poppins', color: Colors.white),
-        ),
-      ],
     );
   }
 
@@ -301,9 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return CarouselSlider(
       options: CarouselOptions(
         height: 200,
-        autoPlay: true,
-        aspectRatio: 16 / 9,
         enlargeCenterPage: true,
+        autoPlay: true,
       ),
       items: popularDestinationsImages.map((imageUrl) {
         return Container(
