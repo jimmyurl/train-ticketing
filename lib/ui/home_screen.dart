@@ -11,12 +11,10 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isRoundTrip = false;
   DateTime? departureDate;
   DateTime? returnDate;
+  String selectedTransportType = 'Train';
 
   final TextEditingController fromController = TextEditingController();
   final TextEditingController toController = TextEditingController();
-
-  // Track the selected transport type
-  String selectedTransport = 'Train';
 
   Future<void> _selectDepartureDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -44,6 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
         returnDate = picked;
       });
     }
+  }
+
+  void _onTransportTypeSelected(String transportType) {
+    setState(() {
+      selectedTransportType = transportType;
+    });
   }
 
   @override
@@ -77,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      // 'From' Field
                       TextField(
                         controller: fromController,
                         decoration: InputDecoration(
@@ -94,7 +97,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      // 'To' Field
                       TextField(
                         controller: toController,
                         decoration: InputDecoration(
@@ -215,6 +217,32 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage('assets/icons/home.png')),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage('assets/icons/search.png')),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage('assets/icons/saved.png')),
+            label: 'Saved',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage('assets/icons/profile.png')),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.black,
+        onTap: (int index) {
+          // Handle bottom navigation tap
+        },
+      ),
     );
   }
 
@@ -248,31 +276,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildTransportOption(String label, String iconPath) {
-    final bool isSelected = label == selectedTransport;
-
+    bool isSelected = selectedTransportType == label;
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedTransport = label; // Update selected transport option
-        });
-      },
+      onTap: () => _onTransportTypeSelected(label),
       child: Column(
         children: [
           Image.asset(
             iconPath,
-            height: isSelected ? 70 : 50, // Enlarge the selected icon
-            width: isSelected ? 70 : 50, // Enlarge the selected icon
+            height: isSelected ? 60 : 50,
+            width: isSelected ? 60 : 50,
+            fit: BoxFit.cover,
           ),
           const SizedBox(height: 5),
           Text(
             label,
             style: TextStyle(
               fontFamily: 'Poppins',
-              color: isSelected
-                  ? Colors.teal
-                  : Colors.black, // Highlight the selected option
+              color: Colors.black,
               fontSize: isSelected ? 18 : 16,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
