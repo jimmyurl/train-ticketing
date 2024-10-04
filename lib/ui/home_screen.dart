@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -8,125 +9,68 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool isRoundTrip = false;
+  DateTime? departureDate;
+  DateTime? returnDate;
+  String? selectedTransport;
+
   final TextEditingController fromController = TextEditingController();
   final TextEditingController toController = TextEditingController();
-  DateTime? departureDate;
 
-  List<String> popularDestinationsImages = [];
-  List<String> locations = [];
+  final List<String> popularDestinationsImages = [
+    'https://www.skyscrapercity.com/threads/dodoma-dodoma-city-hotel-10-fls.2201464/',
+    'https://www.ghrshotels.com/en/hotel/flomi-hotel.ih1812727',
+    'https://www.facebook.com/photo.php?fbid=5839764002704636&id=157303284284098&set=a.159892260691867',
+  ];
 
-  @override
-  void initState() {
-    super.initState();
-    fetchPopularDestinations();
-    fetchLocations();
+  // Method to build transport type selection
+  Widget _buildTransportTypeSelection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildTransportOption('Train', 'assets/icons/trains.png'),
+        _buildTransportOption('Bus', 'assets/icons/buses.png'),
+        _buildTransportOption('Flight', 'assets/icons/flights.png'),
+      ],
+    );
   }
 
-  Future<void> fetchPopularDestinations() async {
-    final response = await Supabase.instance.client
-        .from('popular_destinations')
-        .select('image_url') // assuming 'image_url' is a column
-        .order('id')
-        .limit(10)
-        .then((value) {
-      // Use the data directly from the value
-      popularDestinationsImages =
-          List<String>.from(value.map((item) => item['image_url']));
-    }).catchError((error) {
-      // Handle the error appropriately
-      print('Error fetching popular destinations: $error');
-    });
-
-    setState(() {});
-  }
-
-  Future<void> fetchLocations() async {
-    final response = await Supabase.instance.client
-        .from('locations')
-        .select('name') // assuming 'name' is a column
-        .order('id')
-        .then((value) {
-      // Use the data directly from the value
-      locations = List<String>.from(value.map((item) => item['name']));
-    }).catchError((error) {
-      // Handle the error appropriately
-      print('Error fetching locations: $error');
-    });
-
-    setState(() {});
-  }
-
-  void _handleSearch() {
-    if (fromController.text.isEmpty ||
-        toController.text.isEmpty ||
-        departureDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in all fields')),
-      );
-      return;
-    }
-    // Proceed with search logic
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Search form
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: fromController,
-                    decoration: InputDecoration(labelText: 'From'),
-                  ),
-                  TextField(
-                    controller: toController,
-                    decoration: InputDecoration(labelText: 'To'),
-                  ),
-                  // Add a Date Picker for departureDate
-                  TextButton(
-                    onPressed: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        initialDate: departureDate ?? DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101),
-                      );
-                      if (date != null && date != departureDate) {
-                        setState(() {
-                          departureDate = date;
-                        });
-                      }
-                    },
-                    child: Text(
-                      departureDate == null
-                          ? 'Select Departure Date'
-                          : 'Departure: ${departureDate!.toLocal()}'
-                              .split(' ')[0],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _handleSearch,
-                    child: const Text('Search'),
-                  ),
-                ],
-              ),
+  // Method to build each transport option with animation
+  Widget _buildTransportOption(String label, String iconPath) {
+    bool isSelected = selectedTransport == label;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedTransport = label;
+        });
+      },
+      child: Column(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: isSelected ? 60 : 50,
+            width: isSelected ? 60 : 50,
+            child: Image.asset(
+              iconPath,
+              fit: BoxFit.contain,
             ),
-            // Popular Destinations Carousel
-            _buildPopularDestinationsCarousel(),
-          ],
-        ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              color: isSelected ? Colors.teal : Colors.black,
+              fontSize: 16,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }
 
+  // Method to build a carousel for popular destinations
   Widget _buildPopularDestinationsCarousel() {
     return CarouselSlider(
       options: CarouselOptions(
@@ -135,17 +79,38 @@ class _HomeScreenState extends State<HomeScreen> {
         autoPlay: true,
       ),
       items: popularDestinationsImages.map((imageUrl) {
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 5.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(
-              image: NetworkImage(imageUrl),
-              fit: BoxFit.cover,
-            ),
-          ),
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
         );
       }).toList(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home Screen'),
+      ),
+      body: Column(
+        children: [
+          SizedBox(height: 20),
+          _buildTransportTypeSelection(),
+          SizedBox(height: 20),
+          _buildPopularDestinationsCarousel(),
+        ],
+      ),
     );
   }
 }
