@@ -15,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isRoundTrip = false;
   DateTime? departureDate;
   DateTime? returnDate;
+  String selectedTransport = ''; // Track selected transport type
 
   // Method to select departure date
   Future<void> _selectDepartureDate(BuildContext context) async {
@@ -73,28 +74,61 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Method to build transport type selection
+  // Method to build transport type selection inside the form
   Widget _buildTransportTypeSelection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text(
-          'Select Transport Type',
-          style: TextStyle(
-              fontSize: 16, fontFamily: 'Poppins', color: Colors.white),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedTransport = 'Bus'; // Set the selected transport
+            });
+          },
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/icons/buses.png',
+                height: selectedTransport == 'Bus' ? 60 : 40, // Change size if selected
+                color: selectedTransport == 'Bus' ? Colors.red : null, // Change color if selected
+              ),
+              const Text('Bus'),
+            ],
+          ),
         ),
-        Row(
-          children: [
-            ChoiceChip(
-              label: const Text('Bus'),
-              selected: false, // Add logic to handle selection
-            ),
-            const SizedBox(width: 10),
-            ChoiceChip(
-              label: const Text('Train'),
-              selected: false, // Add logic to handle selection
-            ),
-          ],
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedTransport = 'Train'; // Set the selected transport
+            });
+          },
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/icons/trains.png',
+                height: selectedTransport == 'Train' ? 60 : 40, // Change size if selected
+                color: selectedTransport == 'Train' ? Colors.red : null, // Change color if selected
+              ),
+              const Text('Train'),
+            ],
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedTransport = 'Flight'; // Set the selected transport
+            });
+          },
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/icons/flights.png',
+                height: selectedTransport == 'Flight' ? 60 : 40, // Change size if selected
+                color: selectedTransport == 'Flight' ? Colors.red : null, // Change color if selected
+              ),
+              const Text('Flight'),
+            ],
+          ),
         ),
       ],
     );
@@ -169,6 +203,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
+                      TextField(
+                        readOnly: true,
+                        onTap: () => _selectDepartureDate(context),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: departureDate == null
+                              ? localizations.selectDepartureDate
+                              : DateFormat.yMd().format(departureDate!),
+                          hintStyle: const TextStyle(fontFamily: 'Poppins'),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none),
+                          prefixIcon:
+                              const Icon(Icons.calendar_today, color: Colors.teal),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -176,136 +228,50 @@ class _HomeScreenState extends State<HomeScreen> {
                             value: isRoundTrip,
                             onChanged: (bool? value) {
                               setState(() {
-                                isRoundTrip = value ?? false;
+                                isRoundTrip = value!;
                               });
                             },
                           ),
-                          Text(
-                            localizations.roundTrip,
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'Poppins',
-                                color: Colors.white),
-                          )
+                          const Text(
+                            'Return Trip',
+                            style: TextStyle(fontSize: 16),
+                          ),
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () => _selectDepartureDate(context),
-                        child: Card(
-                          elevation: 5,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12.0, horizontal: 12.0),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.calendar_today,
-                                    color: Colors.blueAccent),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    departureDate != null
-                                        ? "${localizations.departure}: ${DateFormat.yMMMd().format(departureDate!)}"
-                                        : localizations.selectDepartureDate,
-                                    style:
-                                        const TextStyle(fontFamily: 'Poppins'),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (isRoundTrip) ...[
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        GestureDetector(
+                      if (isRoundTrip)
+                        TextField(
+                          readOnly: true,
                           onTap: () => _selectReturnDate(context),
-                          child: Card(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 12.0),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.calendar_today,
-                                      color: Colors.blueAccent),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      returnDate != null
-                                          ? "${localizations.selectReturnDate}: ${DateFormat.yMMMd().format(returnDate!)}"
-                                          : localizations.selectReturnDate,
-                                      style: const TextStyle(
-                                          fontFamily: 'Poppins'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: returnDate == null
+                                ? localizations.selectReturnDate
+                                : DateFormat.yMd().format(returnDate!),
+                            hintStyle: const TextStyle(fontFamily: 'Poppins'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none),
+                            prefixIcon:
+                                const Icon(Icons.calendar_today, color: Colors.teal),
                           ),
                         ),
-                      ],
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      _buildTransportTypeSelection(),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 10),
+                      _buildTransportTypeSelection(), // Transport type icons inside the form
+                      const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {
-// Handle Search Action
+                          // Handle search
                         },
-                        child: Text(
-                          localizations.search,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12.0, horizontal: 24.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                        child: Text(localizations.search),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/icons/home.png')),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/icons/search.png')),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/icons/profile.png')),
-            label: 'Profile',
-          ),
-        ],
       ),
     );
   }

@@ -4,17 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:Tikiti/generated/l10n.dart';
-import 'ui/seat_selection_screen.dart';
-import 'ui/select_screen.dart';
-import 'ui/home_screen.dart';
-import 'ui/search_screen.dart';
-import 'ui/all_trains_screen.dart';
-import 'ui/all_hotels_screen.dart';
-import 'ui/onboarding_screen.dart';
-import 'ui/language_selection_screen.dart';
+import 'package:Tikiti/ui/home_screen.dart'; // Ensure this is your actual home screen file
+import 'package:Tikiti/ui/search_screen.dart'; // Ensure this is your actual search screen file
+import 'package:Tikiti/ui/profile_screen.dart'; // Ensure this is your actual profile screen file
 import 'utils/selection_button_provider.dart';
 import 'utils/theme_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +45,7 @@ class MyApp extends StatelessWidget {
                 : ThemeMode.dark,
             theme: themeHelper.lightTheme,
             darkTheme: themeHelper.darkTheme,
-            home: MyAppStarter(),
+            home: MyHomePage(),
             localizationsDelegates: const [
               S.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -66,75 +60,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyAppStarter extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: checkIfLanguageSelected(),
-      builder: (context, AsyncSnapshot<bool> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (snapshot.data == true) {
-          return FutureBuilder(
-            future: checkIfOnboardingCompleted(),
-            builder: (context, AsyncSnapshot<bool> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
-              if (snapshot.data == true) {
-                return const MyHomePage();
-              } else {
-                return OnboardingScreen(selectedLanguage: getCurrentLanguage());
-              }
-            },
-          );
-        } else {
-          return LanguageSelectionScreen();
-        }
-      },
-    );
-  }
-
-  Future<bool> checkIfLanguageSelected() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('languageSelected') ?? false;
-  }
-
-  Future<bool> checkIfOnboardingCompleted() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('onboardingCompleted') ?? false;
-  }
-
-  String getCurrentLanguage() {
-    // TODO: Implement logic to get the current language
-    // For now, we'll return a default value
-    return 'en';
-  }
-}
-
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-
-  final List<Widget> _screens = [
-    HomeScreen(),
-    SearchScreen(),
-    AllTrainsScreen(),
-    AllHotelsScreen(),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -144,39 +76,32 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = S.of(context);
-
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          const HomeScreen(), // Ensure this class is correctly defined and imported
+          SearchScreen(), // Ensure this class is correctly defined and imported
+          ProfileScreen(), // Ensure this class is correctly defined and imported
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(
-            icon: const ImageIcon(AssetImage("assets/icons/home.png")),
-            label: localizations.home,
+            icon: ImageIcon(AssetImage('assets/icons/home.png')),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: const ImageIcon(AssetImage("assets/icons/search.png")),
-            label: localizations.search,
+            icon: ImageIcon(AssetImage('assets/icons/search.png')),
+            label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: const ImageIcon(AssetImage("assets/icons/train.png")),
-            label: localizations.trains,
-          ),
-          BottomNavigationBarItem(
-            icon: const ImageIcon(AssetImage("assets/icons/hotel.png")),
-            label: localizations.hotels,
-          ),
-          BottomNavigationBarItem(
-            icon: const ImageIcon(AssetImage("assets/icons/profile.png")),
-            label: localizations.profile,
+            icon: ImageIcon(AssetImage('assets/icons/profile.png')),
+            label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
       ),
     );
   }
