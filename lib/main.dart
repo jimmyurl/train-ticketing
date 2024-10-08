@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Updated localization import
+import 'package:Tikiti/generated/l10n.dart';
 import 'ui/seat_selection_screen.dart';
 import 'ui/select_screen.dart';
 import 'ui/home_screen.dart';
@@ -11,12 +11,11 @@ import 'ui/search_screen.dart';
 import 'ui/all_trains_screen.dart';
 import 'ui/all_hotels_screen.dart';
 import 'ui/onboarding_screen.dart';
-import 'ui/language_selection_screen.dart'; // Added language selection screen import
+import 'ui/language_selection_screen.dart';
 import 'utils/selection_button_provider.dart';
-import 'utils/theme_data.dart';
 import 'utils/theme_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:Tikiti/ui/onboarding_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -27,7 +26,9 @@ void main() async {
 
   runApp(ScreenUtilInit(
     designSize: const Size(411, 821),
-    builder: (context, widget) => MyApp(),
+    minTextAdapt: true,
+    splitScreenMode: true,
+    builder: (context, child) => MyApp(),
   ));
 }
 
@@ -50,20 +51,14 @@ class MyApp extends StatelessWidget {
                 : ThemeMode.dark,
             theme: themeHelper.lightTheme,
             darkTheme: themeHelper.darkTheme,
-            home: MyAppStarter(), // Updated the starter page to handle language selection
-
-            // Localization setup
+            home: MyAppStarter(),
             localizationsDelegates: const [
-              AppLocalizations.delegate,
+              S.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: const [
-              Locale('en', ''), // English
-              Locale('sw', ''), // Swahili
-              // Add more locales if needed
-            ],
+            supportedLocales: S.delegate.supportedLocales,
           );
         },
       ),
@@ -80,6 +75,9 @@ class MyAppStarter extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
         if (snapshot.data == true) {
           return FutureBuilder(
             future: checkIfOnboardingCompleted(),
@@ -87,15 +85,18 @@ class MyAppStarter extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
               if (snapshot.data == true) {
                 return const MyHomePage();
               } else {
-                return OnboardingScreen();
+                return OnboardingScreen(selectedLanguage: getCurrentLanguage());
               }
             },
           );
         } else {
-          return LanguageSelectionScreen(); // Show language selection first if not done
+          return LanguageSelectionScreen();
         }
       },
     );
@@ -109,6 +110,12 @@ class MyAppStarter extends StatelessWidget {
   Future<bool> checkIfOnboardingCompleted() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('onboardingCompleted') ?? false;
+  }
+
+  String getCurrentLanguage() {
+    // TODO: Implement logic to get the current language
+    // For now, we'll return a default value
+    return 'en';
   }
 }
 
@@ -137,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); // Access localization
+    final localizations = S.of(context);
 
     return Scaffold(
       body: _screens[_selectedIndex],
@@ -145,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
         items: [
           BottomNavigationBarItem(
             icon: const ImageIcon(AssetImage("assets/icons/home.png")),
-            label: localizations!.home, // Use localization safely
+            label: localizations.home,
           ),
           BottomNavigationBarItem(
             icon: const ImageIcon(AssetImage("assets/icons/search.png")),
@@ -168,6 +175,8 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
+        showUnselectedLabels: true,
       ),
     );
   }
