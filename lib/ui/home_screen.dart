@@ -1,57 +1,109 @@
+import 'package:Tikiti/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController fromController = TextEditingController();
+  TextEditingController toController = TextEditingController();
   bool isRoundTrip = false;
   DateTime? departureDate;
   DateTime? returnDate;
-  String selectedTransportType = 'Train';
 
-  final TextEditingController fromController = TextEditingController();
-  final TextEditingController toController = TextEditingController();
-
+  // Method to select departure date
   Future<void> _selectDepartureDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-    if (picked != null && picked != departureDate) {
-      setState(() {
-        departureDate = picked;
-      });
-    }
-  }
-
-  Future<void> _selectReturnDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: departureDate ?? DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
     );
-    if (picked != null && picked != returnDate) {
+    if (pickedDate != null && pickedDate != departureDate) {
       setState(() {
-        returnDate = picked;
+        departureDate = pickedDate;
       });
     }
   }
 
-  void _onTransportTypeSelected(String transportType) {
-    setState(() {
-      selectedTransportType = transportType;
-    });
+  // Method to select return date
+  Future<void> _selectReturnDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: returnDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (pickedDate != null && pickedDate != returnDate) {
+      setState(() {
+        returnDate = pickedDate;
+      });
+    }
+  }
+
+  // Language switcher for changing locale
+  Widget _buildLanguageSwitcher() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          onPressed: () {
+            setState(() {
+              // Switch to English
+              S.load(const Locale('en'));
+            });
+          },
+          child: const Text('English'),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              // Switch to Swahili
+              S.load(const Locale('sw'));
+            });
+          },
+          child: const Text('Swahili'),
+        ),
+      ],
+    );
+  }
+
+  // Method to build transport type selection
+  Widget _buildTransportTypeSelection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select Transport Type',
+          style: TextStyle(
+              fontSize: 16, fontFamily: 'Poppins', color: Colors.white),
+        ),
+        Row(
+          children: [
+            ChoiceChip(
+              label: const Text('Bus'),
+              selected: false, // Add logic to handle selection
+            ),
+            const SizedBox(width: 10),
+            ChoiceChip(
+              label: const Text('Train'),
+              selected: false, // Add logic to handle selection
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final localizations = S.of(context); // Access localization
+
     return Scaffold(
       backgroundColor: Colors.teal,
       body: SingleChildScrollView(
@@ -59,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 20),
+            _buildLanguageSwitcher(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Image.asset(
@@ -68,15 +121,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Center(child: _buildTypingText()),
+              child: Center(
+                child: Text(
+                  localizations.planYourJourney,
+                  style: const TextStyle(
+                      fontSize: 24, color: Colors.white, fontFamily: 'Poppins'),
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -86,12 +144,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: 'From (Departure)',
+                          hintText: localizations.fromHint,
                           hintStyle: const TextStyle(fontFamily: 'Poppins'),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none),
                           prefixIcon:
                               const Icon(Icons.location_on, color: Colors.teal),
                         ),
@@ -102,12 +159,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: 'To (Destination)',
+                          hintText: localizations.toHint,
                           hintStyle: const TextStyle(fontFamily: 'Poppins'),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none),
                           prefixIcon:
                               const Icon(Icons.location_on, color: Colors.teal),
                         ),
@@ -124,13 +180,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               });
                             },
                           ),
-                          const Text(
-                            'Round Trip',
-                            style: TextStyle(
+                          Text(
+                            localizations.roundTrip,
+                            style: const TextStyle(
                                 fontSize: 16,
                                 fontFamily: 'Poppins',
                                 color: Colors.white),
-                          ),
+                          )
                         ],
                       ),
                       GestureDetector(
@@ -146,12 +202,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 const Icon(Icons.calendar_today,
                                     color: Colors.blueAccent),
-                                const SizedBox(width: 10),
+                                const SizedBox(
+                                  width: 10,
+                                ),
                                 Expanded(
                                   child: Text(
                                     departureDate != null
-                                        ? "Departure: ${DateFormat.yMMMd().format(departureDate!)}"
-                                        : "Select departure date",
+                                        ? "${localizations.departure}: ${DateFormat.yMMMd().format(departureDate!)}"
+                                        : localizations.selectDepartureDate,
                                     style:
                                         const TextStyle(fontFamily: 'Poppins'),
                                   ),
@@ -162,7 +220,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       if (isRoundTrip) ...[
-                        const SizedBox(height: 10),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         GestureDetector(
                           onTap: () => _selectReturnDate(context),
                           child: Card(
@@ -176,12 +236,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   const Icon(Icons.calendar_today,
                                       color: Colors.blueAccent),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
                                   Expanded(
                                     child: Text(
                                       returnDate != null
-                                          ? "Return: ${DateFormat.yMMMd().format(returnDate!)}"
-                                          : "Select return date",
+                                          ? "${localizations.selectReturnDate}: ${DateFormat.yMMMd().format(returnDate!)}"
+                                          : localizations.selectReturnDate,
                                       style: const TextStyle(
                                           fontFamily: 'Poppins'),
                                     ),
@@ -192,33 +254,45 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ],
-                      const SizedBox(height: 10),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       _buildTransportTypeSelection(),
-                      const SizedBox(height: 20),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       ElevatedButton(
                         onPressed: () {
-                          // Handle Search Action
+// Handle Search Action
                         },
-                        child: const Text('Search',
-                            style:
-                                TextStyle(fontSize: 18, fontFamily: 'Poppins')),
+                        child: Text(
+                          localizations.search,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
                         style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12.0, horizontal: 24.0),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8))),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 24.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: const [
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/icons/home.png')),
             label: 'Home',
@@ -228,74 +302,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/icons/saved.png')),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/icons/profile.png')),
             label: 'Profile',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.teal,
-        unselectedItemColor: Colors.black,
-        onTap: (int index) {
-          // Handle bottom navigation tap
-        },
-      ),
-    );
-  }
-
-  Widget _buildTypingText() {
-    return AnimatedTextKit(
-      animatedTexts: [
-        TypewriterAnimatedText(
-          'Plan your journey effortlessly...',
-          textStyle: const TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          speed: const Duration(milliseconds: 100),
-        ),
-      ],
-      isRepeatingAnimation: false,
-    );
-  }
-
-  Widget _buildTransportTypeSelection() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildTransportOption('Train', 'assets/icons/trains.png'),
-        _buildTransportOption('Bus', 'assets/icons/buses.png'),
-        _buildTransportOption('Flight', 'assets/icons/flights.png'),
-      ],
-    );
-  }
-
-  Widget _buildTransportOption(String label, String iconPath) {
-    bool isSelected = selectedTransportType == label;
-    return GestureDetector(
-      onTap: () => _onTransportTypeSelected(label),
-      child: Column(
-        children: [
-          Image.asset(
-            iconPath,
-            height: isSelected ? 60 : 50,
-            width: isSelected ? 60 : 50,
-            fit: BoxFit.cover,
-          ),
-          const SizedBox(height: 5),
-          Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              color: Colors.black,
-              fontSize: isSelected ? 18 : 16,
-              fontWeight: FontWeight.w500,
-            ),
           ),
         ],
       ),

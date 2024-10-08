@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'home_screen.dart';
+import 'package:Tikiti/generated/l10n.dart';
 
 class OnboardingScreen extends StatefulWidget {
+  final String selectedLanguage; // Add language parameter
+
+  OnboardingScreen({required this.selectedLanguage});
+
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
@@ -13,8 +18,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   List<Map<String, String>> onboardingData = [
     {
-      'image':
-          'assets/images/onboarding1.jpg', // Ensure these images are in your assets
+      'image': 'assets/images/onboarding1.jpg',
       'title': 'Welcome to Tikiti',
       'subtitle': 'Find and book your trips easily'
     },
@@ -41,7 +45,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Load the selected language during the onboarding screen initialization
+    S.load(Locale(widget.selectedLanguage));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final localizations = S.of(context); // Access localization
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -76,11 +89,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     builder: (context) => HomeScreen()));
                           },
                           child: Text(
-                            'Skip',
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              color: Colors.grey,
-                            ),
+                            localizations.skip,
+                            style:
+                                TextStyle(fontSize: 18.sp, color: Colors.grey),
                           ),
                         )
                       : Container(),
@@ -95,8 +106,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     child: Text(
                       _currentPage == onboardingData.length - 1
-                          ? 'Get Started'
-                          : 'Next',
+                          ? localizations.getStarted
+                          : localizations.next,
                       style: TextStyle(fontSize: 18.sp),
                     ),
                   ),
@@ -132,7 +143,7 @@ class OnboardingContent extends StatelessWidget {
             child: Image.asset(
               image,
               width: double.infinity,
-              fit: BoxFit.cover, // Adjust image to cover the container
+              fit: BoxFit.cover,
             ),
           ),
           SizedBox(height: 20.h),
@@ -142,7 +153,7 @@ class OnboardingContent extends StatelessWidget {
               fontSize: 28.sp,
               fontWeight: FontWeight.bold,
               color: Colors.black,
-              fontFamily: 'Poppins', // Custom font
+              fontFamily: 'Poppins',
             ),
           ),
           SizedBox(height: 10.h),

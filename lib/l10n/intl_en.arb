@@ -1,0 +1,23 @@
+{
+    "getStarted": "Get Started",
+    "next": "Next",
+    "skip": "Skip",
+    "appTitle": "Journey Planner",
+    "fromHint": "From (Departure)",
+    "toHint": "To (Destination)",
+    "roundTrip": "Round Trip",
+    "departure": "Departure",
+    "returnDate": "Return",  
+    "selectDepartureDate": "Select departure date",
+    "selectReturnDate": "Select return date",
+    "search": "Search",
+    "planYourJourney": "Plan your journey effortlessly...",
+    "trains": "Trains",
+    "bus": "Bus",
+    "flight": "Flight",
+    "home": "Home",
+    "hotels":"Hotels",
+    "saved": "Saved",
+    "profile": "Profile"
+  }
+  
