@@ -29,6 +29,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "fromHint": MessageLookupByLibrary.simpleMessage("Kutoka (Kuondoka)"),
         "home": MessageLookupByLibrary.simpleMessage("Nyumbani"),
         "hotels": MessageLookupByLibrary.simpleMessage("Hoteli"),
+        "onboardingSubtitle1":
+            MessageLookupByLibrary.simpleMessage("Tafuta na buku safari yako"),
+        "onboardingSubtitle2": MessageLookupByLibrary.simpleMessage(
+            "Tizama tiketi zinazopatikana"),
+        "onboardingSubtitle3": MessageLookupByLibrary.simpleMessage(
+            "Kuwa na uzoefu mzuri na uwekaji nafasi wako"),
+        "onboardingTitle1":
+            MessageLookupByLibrary.simpleMessage("Karibu Tikiti"),
+        "onboardingTitle2":
+            MessageLookupByLibrary.simpleMessage("Wekesha tiketi yako sasa"),
+        "onboardingTitle3":
+            MessageLookupByLibrary.simpleMessage("Furahia Safari Yako"),
         "planYourJourney": MessageLookupByLibrary.simpleMessage(
             "Panga safari yako kwa urahisi..."),
         "profile": MessageLookupByLibrary.simpleMessage("Wasifu"),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'home_screen.dart';
 import 'package:Tikiti/generated/l10n.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'home_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  final String selectedLanguage; // Add language parameter
+  final String selectedLanguage;
 
   OnboardingScreen({required this.selectedLanguage});
 
@@ -13,160 +14,57 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
-
-  List<Map<String, String>> onboardingData = [
-    {
-      'image': 'assets/images/onboarding1.jpg',
-      'title': 'Welcome to Tikiti',
-      'subtitle': 'Find and book your trips easily'
-    },
-    {
-      'image': 'assets/images/onboarding2.png',
-      'title': 'Book Your Tickets',
-      'subtitle': 'Browse through available trains and hotels'
-    },
-    {
-      'image': 'assets/images/onboarding3.jpeg',
-      'title': 'Enjoy Your Journey',
-      'subtitle': 'Have a wonderful experience with your bookings'
-    }
-  ];
-
-  void _onNextPage() {
-    if (_currentPage < onboardingData.length - 1) {
-      _pageController.nextPage(
-          duration: Duration(milliseconds: 300), curve: Curves.easeIn);
-    } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    }
-  }
+  late Future<List<dynamic>> onboardingData; // Changed to Future
 
   @override
   void initState() {
     super.initState();
-    // Load the selected language during the onboarding screen initialization
-    S.load(Locale(widget.selectedLanguage));
+    onboardingData = loadOnboardingData(); // Initialize the data asynchronously
+  }
+
+  Future<List<dynamic>> loadOnboardingData() async {
+    // Simulate loading data (e.g., from a file, database, or API)
+    await Future.delayed(Duration(seconds: 2)); // Example delay
+    return [
+      {'title': 'Welcome', 'description': 'Discover the app!'},
+      {'title': 'Explore', 'description': 'Find various services easily!'},
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = S.of(context); // Access localization
-
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (int index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                itemCount: onboardingData.length,
-                itemBuilder: (context, index) => OnboardingContent(
-                  image: onboardingData[index]['image']!,
-                  title: onboardingData[index]['title']!,
-                  subtitle: onboardingData[index]['subtitle']!,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: FutureBuilder<List<dynamic>>(
+        future: onboardingData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator()); // Show a loader while waiting
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error loading data'));
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No data available'));
+          }
+
+          // Use the data (snapshot.data) to build your onboarding screens
+          return PageView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final onboardingItem = snapshot.data![index];
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _currentPage < onboardingData.length - 1
-                      ? TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeScreen()));
-                          },
-                          child: Text(
-                            localizations.skip,
-                            style:
-                                TextStyle(fontSize: 18.sp, color: Colors.grey),
-                          ),
-                        )
-                      : Container(),
-                  ElevatedButton(
-                    onPressed: _onNextPage,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 30.w, vertical: 15.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.r),
-                      ),
-                    ),
-                    child: Text(
-                      _currentPage == onboardingData.length - 1
-                          ? localizations.getStarted
-                          : localizations.next,
-                      style: TextStyle(fontSize: 18.sp),
-                    ),
-                  ),
+                  Text(onboardingItem['title'],
+                      style: Theme.of(context).textTheme.headline4),
+                  SizedBox(height: 20),
+                  Text(onboardingItem['description'],
+                      style: Theme.of(context).textTheme.subtitle1),
                 ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class OnboardingContent extends StatelessWidget {
-  final String image;
-  final String title;
-  final String subtitle;
-
-  const OnboardingContent({
-    required this.image,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        children: [
-          Expanded(
-            flex: 5,
-            child: Image.asset(
-              image,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(height: 20.h),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              fontFamily: 'Poppins',
-            ),
-          ),
-          SizedBox(height: 10.h),
-          Text(
-            subtitle,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18.sp,
-              color: Colors.grey,
-              fontFamily: 'Poppins',
-            ),
-          ),
-        ],
+              );
+            },
+          );
+        },
       ),
     );
   }

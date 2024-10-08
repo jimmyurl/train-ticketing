@@ -1,4 +1,11 @@
 {
+    "@@locale": "sw",
+    "onboardingTitle1": "Karibu Tikiti",
+    "onboardingSubtitle1": "Tafuta na buku safari yako",
+    "onboardingTitle2": "Wekesha tiketi yako sasa",
+    "onboardingSubtitle2": "Tizama tiketi zinazopatikana",
+    "onboardingTitle3": "Furahia Safari Yako",
+    "onboardingSubtitle3": "Kuwa na uzoefu mzuri na uwekaji nafasi wako",
     "appTitle": "Mpangilio wa Safari",
     "fromHint": "Kutoka (Kuondoka)",
     "toHint": "Kwenda (Kifiko)",

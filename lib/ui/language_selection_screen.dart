@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Tikiti/generated/l10n.dart';
 import 'onboarding_screen.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   @override
-  _LanguageSelectionScreenState createState() =>
-      _LanguageSelectionScreenState();
+  _LanguageSelectionScreenState createState() => _LanguageSelectionScreenState();
 }
 
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
   String selectedLanguage = 'en'; // Default language
 
-  void _onProceed() {
-    Navigator.pushReplacement(
-      context,
+  void _onProceed() async {
+    // Save the selected language
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedLanguage', selectedLanguage);
+    await prefs.setBool('languageSelected', true);
+
+    // Update the app's locale
+    await S.load(Locale(selectedLanguage));
+
+    // Navigate to OnboardingScreen
+    Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => OnboardingScreen(
-          selectedLanguage: selectedLanguage, // Pass selected language
+          selectedLanguage: selectedLanguage,
         ),
       ),
     );

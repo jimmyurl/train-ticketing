@@ -1,4 +1,11 @@
 {
+    "@@locale": "en",
+    "onboardingTitle1": "Welcome to Tikiti",
+    "onboardingSubtitle1": "Find and book your trips easily",
+    "onboardingTitle2": "Book Your Tickets",
+    "onboardingSubtitle2": "Browse through available trains and hotels",
+    "onboardingTitle3": "Enjoy Your Journey",
+    "onboardingSubtitle3": "Have a wonderful experience with your bookings",
     "getStarted": "Get Started",
     "next": "Next",
     "skip": "Skip",

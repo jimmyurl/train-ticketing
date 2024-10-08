@@ -31,6 +31,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "home": MessageLookupByLibrary.simpleMessage("Home"),
         "hotels": MessageLookupByLibrary.simpleMessage("Hotels"),
         "next": MessageLookupByLibrary.simpleMessage("Next"),
+        "onboardingSubtitle1": MessageLookupByLibrary.simpleMessage(
+            "Find and book your trips easily"),
+        "onboardingSubtitle2": MessageLookupByLibrary.simpleMessage(
+            "Browse through available trains and hotels"),
+        "onboardingSubtitle3": MessageLookupByLibrary.simpleMessage(
+            "Have a wonderful experience with your bookings"),
+        "onboardingTitle1":
+            MessageLookupByLibrary.simpleMessage("Welcome to Tikiti"),
+        "onboardingTitle2":
+            MessageLookupByLibrary.simpleMessage("Book Your Tickets"),
+        "onboardingTitle3":
+            MessageLookupByLibrary.simpleMessage("Enjoy Your Journey"),
         "planYourJourney": MessageLookupByLibrary.simpleMessage(
             "Plan your journey effortlessly..."),
         "profile": MessageLookupByLibrary.simpleMessage("Profile"),

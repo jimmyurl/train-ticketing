@@ -50,6 +50,66 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Welcome to Tikiti`
+  String get onboardingTitle1 {
+    return Intl.message(
+      'Welcome to Tikiti',
+      name: 'onboardingTitle1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Find and book your trips easily`
+  String get onboardingSubtitle1 {
+    return Intl.message(
+      'Find and book your trips easily',
+      name: 'onboardingSubtitle1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Book Your Tickets`
+  String get onboardingTitle2 {
+    return Intl.message(
+      'Book Your Tickets',
+      name: 'onboardingTitle2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Browse through available trains and hotels`
+  String get onboardingSubtitle2 {
+    return Intl.message(
+      'Browse through available trains and hotels',
+      name: 'onboardingSubtitle2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enjoy Your Journey`
+  String get onboardingTitle3 {
+    return Intl.message(
+      'Enjoy Your Journey',
+      name: 'onboardingTitle3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Have a wonderful experience with your bookings`
+  String get onboardingSubtitle3 {
+    return Intl.message(
+      'Have a wonderful experience with your bookings',
+      name: 'onboardingSubtitle3',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Get Started`
   String get getStarted {
     return Intl.message(
