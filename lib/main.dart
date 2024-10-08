@@ -15,6 +15,7 @@ import 'ui/language_selection_screen.dart';
 import 'utils/selection_button_provider.dart';
 import 'utils/theme_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Tikiti/generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
