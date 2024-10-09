@@ -12,7 +12,7 @@
     "appTitle": "Tikiti",
     "fromHint": "From (Departure)",
     "toHint": "To (Destination)",
-    "roundTrip": "Round Trip",
+    "returnTrip": "Round Trip",
     "departure": "Departure",
     "returnDate": "Return",  
     "selectDepartureDate": "Select departure date",

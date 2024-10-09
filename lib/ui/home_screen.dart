@@ -1,6 +1,7 @@
 import 'package:Tikiti/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,9 +16,10 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isRoundTrip = false;
   DateTime? departureDate;
   DateTime? returnDate;
-  String selectedTransport = ''; // Track selected transport type
+  String selectedTransport = '';
+  
+  Locale _locale = const Locale('en'); // Track current locale
 
-  // Method to select departure date
   Future<void> _selectDepartureDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -32,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Method to select return date
   Future<void> _selectReturnDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -47,34 +48,59 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Language switcher for changing locale
   Widget _buildLanguageSwitcher() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        TextButton(
-          onPressed: () {
-            setState(() {
-              // Switch to English
-              S.load(const Locale('en'));
-            });
-          },
-          child: const Text('English'),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildLanguageOption('EN', const Locale('en')),
+            const SizedBox(width: 8),
+            _buildLanguageOption('SW', const Locale('sw')),
+          ],
         ),
-        TextButton(
-          onPressed: () {
-            setState(() {
-              // Switch to Swahili
-              S.load(const Locale('sw'));
-            });
-          },
-          child: const Text('Swahili'),
-        ),
-      ],
+      ),
     );
   }
 
-  // Method to build transport type selection inside the form
+  Widget _buildLanguageOption(String label, Locale locale) {
+    bool isSelected = _locale.languageCode == locale.languageCode; // Compare with current locale
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _locale = locale;
+          S.load(locale); // Load the selected locale
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.teal : Colors.transparent,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.teal,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildTransportTypeSelection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,15 +108,15 @@ class _HomeScreenState extends State<HomeScreen> {
         GestureDetector(
           onTap: () {
             setState(() {
-              selectedTransport = 'Bus'; // Set the selected transport
+              selectedTransport = 'Bus';
             });
           },
           child: Column(
             children: [
               Image.asset(
                 'assets/icons/buses.png',
-                height: selectedTransport == 'Bus' ? 60 : 40, // Change size if selected
-                color: selectedTransport == 'Bus' ? Colors.red : null, // Change color if selected
+                height: selectedTransport == 'Bus' ? 60 : 40,
+                color: selectedTransport == 'Bus' ? Colors.red : null,
               ),
               const Text('Bus'),
             ],
@@ -99,15 +125,15 @@ class _HomeScreenState extends State<HomeScreen> {
         GestureDetector(
           onTap: () {
             setState(() {
-              selectedTransport = 'Train'; // Set the selected transport
+              selectedTransport = 'Train';
             });
           },
           child: Column(
             children: [
               Image.asset(
                 'assets/icons/trains.png',
-                height: selectedTransport == 'Train' ? 60 : 40, // Change size if selected
-                color: selectedTransport == 'Train' ? Colors.red : null, // Change color if selected
+                height: selectedTransport == 'Train' ? 60 : 40,
+                color: selectedTransport == 'Train' ? Colors.red : null,
               ),
               const Text('Train'),
             ],
@@ -116,15 +142,15 @@ class _HomeScreenState extends State<HomeScreen> {
         GestureDetector(
           onTap: () {
             setState(() {
-              selectedTransport = 'Flight'; // Set the selected transport
+              selectedTransport = 'Flight';
             });
           },
           child: Column(
             children: [
               Image.asset(
                 'assets/icons/flights.png',
-                height: selectedTransport == 'Flight' ? 60 : 40, // Change size if selected
-                color: selectedTransport == 'Flight' ? Colors.red : null, // Change color if selected
+                height: selectedTransport == 'Flight' ? 60 : 40,
+                color: selectedTransport == 'Flight' ? Colors.red : null,
               ),
               const Text('Flight'),
             ],
@@ -136,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = S.of(context); // Access localization
+    final localizations = S.of(context);
 
     return Scaffold(
       backgroundColor: Colors.teal,
@@ -144,8 +170,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 20),
-            _buildLanguageSwitcher(),
+            const SizedBox(height: 40),
+            Align(
+              alignment: Alignment.center,
+              child: _buildLanguageSwitcher(),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Image.asset(
@@ -232,9 +261,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               });
                             },
                           ),
-                          const Text(
-                            'Return Trip',
-                            style: TextStyle(fontSize: 16),
+                          Text(
+                            localizations.returnTrip,
+                            style: const TextStyle(fontSize: 16),
                           ),
                         ],
                       ),
@@ -257,7 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       const SizedBox(height: 10),
-                      _buildTransportTypeSelection(), // Transport type icons inside the form
+                      _buildTransportTypeSelection(),
                       const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {

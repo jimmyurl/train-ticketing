@@ -9,7 +9,7 @@
     "appTitle": "Mpangilio wa Safari",
     "fromHint": "Kutoka (Kuondoka)",
     "toHint": "Kwenda (Kifiko)",
-    "roundTrip": "Safari ya Kwenda na Kurudi",
+    "returnTrip": "Safari ya Kwenda na Kurudi",
     "departure": "Kuondoka",
     "return": "Kurudi",
     "selectDepartureDate": "Chagua tarehe ya kuondoka",

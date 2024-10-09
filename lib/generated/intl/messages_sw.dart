@@ -27,8 +27,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "departure": MessageLookupByLibrary.simpleMessage("Kuondoka"),
         "flight": MessageLookupByLibrary.simpleMessage("Ndege"),
         "fromHint": MessageLookupByLibrary.simpleMessage("Kutoka (Kuondoka)"),
+        "getStarted": MessageLookupByLibrary.simpleMessage("Anza sasa"),
         "home": MessageLookupByLibrary.simpleMessage("Nyumbani"),
         "hotels": MessageLookupByLibrary.simpleMessage("Hoteli"),
+        "next": MessageLookupByLibrary.simpleMessage("Mbele"),
         "onboardingSubtitle1":
             MessageLookupByLibrary.simpleMessage("Tafuta na buku safari yako"),
         "onboardingSubtitle2": MessageLookupByLibrary.simpleMessage(
@@ -44,7 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "planYourJourney": MessageLookupByLibrary.simpleMessage(
             "Panga safari yako kwa urahisi..."),
         "profile": MessageLookupByLibrary.simpleMessage("Wasifu"),
-        "roundTrip":
+        "returnTrip":
             MessageLookupByLibrary.simpleMessage("Safari ya Kwenda na Kurudi"),
         "saved": MessageLookupByLibrary.simpleMessage("Zilizohifadhiwa"),
         "search": MessageLookupByLibrary.simpleMessage("Tafuta"),
@@ -52,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Chagua tarehe ya kuondoka"),
         "selectReturnDate":
             MessageLookupByLibrary.simpleMessage("Chagua tarehe ya kurudi"),
+        "skip": MessageLookupByLibrary.simpleMessage("Vuka"),
         "toHint": MessageLookupByLibrary.simpleMessage("Kwenda (Kifiko)"),
         "trains": MessageLookupByLibrary.simpleMessage("Treni")
       };

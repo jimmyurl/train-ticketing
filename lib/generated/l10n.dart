@@ -140,10 +140,10 @@ class S {
     );
   }
 
-  /// `Journey Planner`
+  /// `Tikiti`
   String get appTitle {
     return Intl.message(
-      'Journey Planner',
+      'Tikiti',
       name: 'appTitle',
       desc: '',
       args: [],
@@ -171,10 +171,10 @@ class S {
   }
 
   /// `Round Trip`
-  String get roundTrip {
+  String get returnTrip {
     return Intl.message(
       'Round Trip',
-      name: 'roundTrip',
+      name: 'returnTrip',
       desc: '',
       args: [],
     );
